@@ -106,5 +106,167 @@
       { "image": "images/birds23_ru.jpg", "title": "видео",   "time": "0:00" },
       { "image": "images/birds24_ru.jpg", "title": "описание",     "time": "0:16" }
     ]
+  },
+  {
+    "name": "Серебристая чайка",
+    "audio": "audio/birds25_ru.mp3",
+    "video": "videos/birds25_ru.mp4",
+    "cards": [
+      { "image": "images/birds25_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds26_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Сойка",
+    "audio": "audio/birds27_ru.mp3",
+    "video": "videos/birds27_ru.mp4",
+    "cards": [
+      { "image": "images/birds27_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds28_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Длиннохвостая синица",
+    "audio": "audio/birds29_ru.mp3",
+    "video": "videos/birds29_ru.mp4",
+    "cards": [
+      { "image": "images/birds29_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds30_ru.jpg", "title": "описание",     "time": "0:11" }
+    ]
+  },
+  {
+    "name": "Кряква",
+    "audio": "audio/birds31_ru.mp3",
+    "video": "videos/birds31_ru.mp4",
+    "cards": [
+      { "image": "images/birds31_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds32_ru.jpg", "title": "описание",     "time": "0:19" }
+    ]
+  },
+  {
+    "name": "Лебедь-шипун",
+    "audio": "audio/birds33_ru.mp3",
+    "video": "videos/birds33_ru.mp4",
+    "cards": [
+      { "image": "images/birds33_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds34_ru.jpg", "title": "описание",     "time": "0:12" }
+    ]
+  },
+  {
+    "name": "Тупик",
+    "audio": "audio/birds35_ru.mp3",
+    "video": "videos/birds35_ru.mp4",
+    "cards": [
+      { "image": "images/birds35_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds36_ru.jpg", "title": "описание",     "time": "0:11" }
+    ]
+  },
+  {
+    "name": "Зарянка",
+    "audio": "audio/birds37_ru.mp3",
+    "video": "videos/birds37_ru.mp4",
+    "cards": [
+      { "image": "images/birds37_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds38_ru.jpg", "title": "описание",     "time": "0:11" }
+    ]
+  },
+  {
+    "name": "Сорока",
+    "audio": "audio/birds39_ru.mp3",
+    "video": "videos/birds39_ru.mp4",
+    "cards": [
+      { "image": "images/birds39_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds40_ru.jpg", "title": "описание",     "time": "0:16" }
+    ]
+  },
+  {
+    "name": "Певчий дрозд",
+    "audio": "audio/birds41_ru.mp3",
+    "video": "videos/birds41_ru.mp4",
+    "cards": [
+      { "image": "images/birds41_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds42_ru.jpg", "title": "описание",     "time": "0:14" }
+    ]
+  },
+  {
+    "name": "Домовый воробей",
+    "audio": "audio/birds43_ru.mp3",
+    "video": "videos/birds43_ru.mp4",
+    "cards": [
+      { "image": "images/birds43_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds44_ru.jpg", "title": "описание",     "time": "0:16" }
+    ]
+  },
+  {
+    "name": "Скворец",
+    "audio": "audio/birds45_ru.mp3",
+    "video": "videos/birds45_ru.mp4",
+    "cards": [
+      { "image": "images/birds45_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds46_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Серая неясыть",
+    "audio": "audio/birds47_ru.mp3",
+    "video": "videos/birds47_ru.mp4",
+    "cards": [
+      { "image": "images/birds47_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds48_ru.jpg", "title": "описание",     "time": "0:18" }
+    ]
+  },
+  {
+    "name": "Вяхирь",
+    "audio": "audio/birds49_ru.mp3",
+    "video": "videos/birds49_ru.mp4",
+    "cards": [
+      { "image": "images/birds49_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds50_ru.jpg", "title": "описание",     "time": "0:09" }
+    ]
+  },
+  {
+    "name": "Крапивник",
+    "audio": "audio/birds51_ru.mp3",
+    "video": "videos/birds51_ru.mp4",
+    "cards": [
+      { "image": "images/birds51_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds52_ru.jpg", "title": "описание",     "time": "0:11" }
+    ]
+  },
+  {
+    "name": "Ласточка",
+    "audio": "audio/birds53_ru.mp3",
+    "video": "videos/birds53_ru.mp4",
+    "cards": [
+      { "image": "images/birds53_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds54_ru.jpg", "title": "описание",     "time": "0:12" }
+    ]
+  },
+  {
+    "name": "Черный дрозд",
+    "audio": "audio/birds55_ru.mp3",
+    "video": "videos/birds55_ru.mp4",
+    "cards": [
+      { "image": "images/birds55_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds56_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Фазан",
+    "audio": "audio/birds57_ru.mp3",
+    "video": "videos/birds57_ru.mp4",
+    "cards": [
+      { "image": "images/birds57_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds58_ru.jpg", "title": "описание",     "time": "0:16" }
+    ]
+  },
+  {
+    "name": "Обыкновенная сипуха",
+    "audio": "audio/birds59_ru.mp3",
+    "video": "videos/birds59_ru.mp4",
+    "cards": [
+      { "image": "images/birds59_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds60_ru.jpg", "title": "описание",     "time": "0:15" }
+    ]
   }
 ]
