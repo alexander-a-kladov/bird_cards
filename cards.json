@@ -1,42 +1,38 @@
 [
   {
-    "name": "Природа гор",
-    "audio": "audio/nature_mountains.mp3",
-    "video": "videos/mountains_intro.mp4",
+    "name": "Лазоревка",
+    "audio": "audio/birds01_ru.mp3",
+    "video": "videos/birds01_ru.mp4",
     "cards": [
-      { "image": "images/nature_01.jpg", "title": "Рассвет в горах",  "time": "0:00" },
-      { "image": "images/nature_02.jpg", "title": "Горное озеро",     "time": "0:18" },
-      { "image": "images/nature_03.jpg", "title": "Снежные вершины",  "time": "0:42" }
+      { "image": "images/birds01_ru.jpg", "title": "видео",  "time": "0:00" },
+      { "image": "images/birds02_ru.jpg", "title": "описание",     "time": "0:11" }
     ]
   },
   {
-    "name": "Древние города",
-    "audio": "audio/history_cities.mp3",
-    "video": null,
+    "name": "Канюк",
+    "audio": "audio/birds03_ru.mp3",
+    "video": "videos/birds03_ru.mp4",
     "cards": [
-      { "image": "images/city_01.jpg", "title": "Акрополь",      "time": "0:00" },
-      { "image": "images/city_02.jpg", "title": "Колизей",        "time": "0:25" },
-      { "image": "images/city_03.jpg", "title": "Мачу-Пикчу",    "time": "0:55" },
-      { "image": "images/city_04.jpg", "title": "Ангкор-Ват",     "time": "1:20" }
+      { "image": "images/birds03_ru.jpg", "title": "видео",      "time": "0:00" },
+      { "image": "images/birds04_ru.jpg", "title": "описание",        "time": "0:13" }
     ]
   },
   {
-    "name": "Подводный мир",
-    "audio": null,
-    "video": null,
+    "name": "Канадская казарка",
+    "audio": "audio/birds05_ru.mp3",
+    "video": "videos/birds05_ru.mp4",
     "cards": [
-      { "image": "images/sea_01.jpg", "title": "Коралловый риф" },
-      { "image": "images/sea_02.jpg", "title": "Морские черепахи" }
+      { "image": "images/birds05_ru.jpg", "title": "видео", "time": "0:00" },
+      { "image": "images/birds06_ru.jpg", "title": "описание", "time": "0:12" }
     ]
   },
   {
-    "name": "Космос",
-    "audio": "audio/space_ambient.mp3",
-    "video": "videos/space_launch.mp4",
+    "name": "Зяблик",
+    "audio": "audio/birds07_ru.mp3",
+    "video": "videos/birds07_ru.mp4",
     "cards": [
-      { "image": "images/space_01.jpg", "title": "Млечный путь",   "time": "0:00" },
-      { "image": "images/space_02.jpg", "title": "Туманность",     "time": "0:30" },
-      { "image": "images/space_03.jpg", "title": "МКС на орбите",  "time": "1:05" }
+      { "image": "images/birds07_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds08_ru.jpg", "title": "описание",     "time": "0:10" }
     ]
   }
 ]
