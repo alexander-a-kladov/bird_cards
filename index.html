@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Card Viewer</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a26;
+    --surface: #1e1e2e;
+    --surface2: #252538;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #e8e8f0;
+    --text2: #9898b0;
+    --text3: #5a5a78;
+    --accent: #7c6ff7;
+    --accent2: #5b52d4;
+    --accent-glow: rgba(124,111,247,0.25);
+    --gold: #e8b84b;
+    --gold2: rgba(232,184,75,0.15);
+    --ctrl-h: 52px;
+    --font: 'Crimson Pro', Georgia, serif;
+    --font-ui: 'DM Sans', system-ui, sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    overflow: hidden;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  #topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    z-index: 10;
+    min-height: 50px;
+  }
+
+  #menu-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  #menu-btn:hover { background: var(--surface2); }
+
+  #topic-title {
+    font-family: var(--font);
+    font-size: clamp(15px, 2.5vw, 20px);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #card-counter {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--font-ui);
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN STAGE ── */
+  #stage {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  #card-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.3s ease;
+    user-select: none;
+  }
+
+  #card-img.loading { opacity: 0.3; }
+
+  /* video overlay */
+  #video-overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  #video-overlay.active { display: flex; }
+  #stage-video {
+    max-width: 100%;
+    max-height: 100%;
+    outline: none;
+  }
+  #video-close {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--border2);
+    color: #fff;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 6;
+  }
+
+  /* swipe hint arrows */
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    width: 38px; height: 56px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  #stage:hover .nav-arrow { opacity: 1; }
+  .nav-arrow.left { left: 8px; }
+  .nav-arrow.right { right: 8px; }
+  .nav-arrow:hover { background: rgba(0,0,0,0.75); }
+  .nav-arrow:disabled { opacity: 0.15 !important; cursor: default; }
+
+  /* ── BOTTOM CONTROLS ── */
+  #controls {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* audio row */
+  #audio-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0 4px;
+    min-height: 44px;
+  }
+  #audio-row.hidden { display: none; }
+
+  .ctrl-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+    font-family: var(--font-ui);
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .ctrl-btn:hover { background: var(--surface2); border-color: var(--border2); }
+  .ctrl-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ctrl-btn.icon-only { width: 34px; padding: 0; }
+
+  #progress-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  #time-cur, #time-tot {
+    font-size: 11px;
+    color: var(--text3);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  #progress {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--surface2);
+    cursor: pointer;
+    outline: none;
+  }
+  #progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+  #progress::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+
+  /* nav + video row */
+  #nav-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0 8px;
+  }
+
+  #thumb-strip {
+    flex: 1;
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px 0;
+  }
+  #thumb-strip::-webkit-scrollbar { display: none; }
+
+  .thumb {
+    width: 44px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--surface);
+    opacity: 0.6;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .thumb.active {
+    border-color: var(--accent);
+    opacity: 1;
+  }
+  .thumb.placeholder {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text3);
+    font-size: 18px;
+  }
+
+  #cont-listen-btn {
+    background: none;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0 10px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: var(--font-ui);
+    display: flex; align-items: center; gap: 5px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  #cont-listen-btn:hover { background: var(--gold2); }
+  #cont-listen-btn.active { background: var(--gold2); }
+
+  /* ── MENU OVERLAY ── */
+  #menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+  }
+  #menu-overlay.open { display: flex; }
+
+  #menu-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+  }
+
+  #menu-panel {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: min(320px, 88vw);
+    background: var(--bg2);
+    border-right: 1px solid var(--border2);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+  #menu-overlay.open #menu-panel { transform: translateX(0); }
+
+  #menu-header {
+    padding: 18px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #menu-header h2 {
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text);
+  }
+  #menu-close {
+    background: none; border: none;
+    color: var(--text2); font-size: 22px;
+    cursor: pointer; padding: 0;
+    line-height: 1;
+  }
+
+  #menu-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .menu-item:hover { background: var(--surface); }
+  .menu-item.active {
+    background: var(--surface);
+    border-left-color: var(--accent);
+  }
+
+  .menu-thumb {
+    width: 56px; height: 38px;
+    border-radius: 5px;
+    object-fit: cover;
+    background: var(--surface2);
+    flex-shrink: 0;
+  }
+
+  .menu-info { min-width: 0; }
+  .menu-name {
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+  .menu-meta {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 80px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 100;
+    white-space: nowrap;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── VIDEO BTN indicator ── */
+  #video-btn {
+    background: none;
+    border: 1px solid rgba(232,184,75,0.5);
+    color: var(--gold);
+  }
+  #video-btn:hover { background: var(--gold2); }
+
+  /* continuous indicator dot */
+  #cont-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: none;
+    flex-shrink: 0;
+  }
+  #cont-listen-btn.active #cont-dot { display: block; }
+
+  /* ── landscape compact ── */
+  @media (orientation: landscape) and (max-height: 500px) {
+    #topbar { min-height: 40px; padding: 4px 12px; }
+    #topic-title { font-size: 14px; }
+    #audio-row { padding: 5px 0 2px; min-height: 38px; }
+    #nav-row { padding: 2px 0 5px; }
+    .thumb { height: 24px; }
+    .ctrl-btn { height: 30px; font-size: 13px; }
+    #cont-listen-btn { height: 30px; font-size: 10px; }
+  }
+
+  @media (max-width: 400px) {
+    #topbar { padding: 6px 10px; }
+    .ctrl-btn { padding: 0 7px; font-size: 14px; }
+    #time-cur, #time-tot { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- TOP BAR -->
+  <header id="topbar">
+    <button id="menu-btn" aria-label="Открыть меню">☰</button>
+    <div id="topic-title">Загрузка…</div>
+    <span id="card-counter"></span>
+  </header>
+
+  <!-- STAGE -->
+  <main id="stage">
+    <img id="card-img" src="" alt="" draggable="false">
+
+    <!-- video overlay -->
+    <div id="video-overlay">
+      <button id="video-close" aria-label="Закрыть видео">✕</button>
+      <video id="stage-video" playsinline preload="none"></video>
+    </div>
+
+    <!-- nav arrows (hover on desktop) -->
+    <button class="nav-arrow left" id="prev-card-btn" aria-label="Предыдущая карточка">‹</button>
+    <button class="nav-arrow right" id="next-card-btn" aria-label="Следующая карточка">›</button>
+  </main>
+
+  <!-- BOTTOM CONTROLS -->
+  <footer id="controls">
+    <!-- audio row -->
+    <div id="audio-row" class="hidden">
+      <button class="ctrl-btn icon-only" id="play-btn" aria-label="Воспроизвести">▶</button>
+      <button class="ctrl-btn icon-only" id="pause-btn" aria-label="Пауза">⏸</button>
+      <button class="ctrl-btn icon-only" id="stop-btn" aria-label="Стоп">⏹</button>
+      <div id="progress-wrap">
+        <span id="time-cur">0:00</span>
+        <input type="range" id="progress" min="0" max="100" value="0" step="0.1">
+        <span id="time-tot">0:00</span>
+      </div>
+    </div>
+
+    <!-- nav + thumbs row -->
+    <div id="nav-row">
+      <button class="ctrl-btn icon-only" id="prev-topic-btn" aria-label="Предыдущая тема">⟨</button>
+      <div id="thumb-strip"></div>
+      <button id="video-btn" class="ctrl-btn" style="display:none" aria-label="Воспроизвести видео">▶ Видео</button>
+      <button id="cont-listen-btn" aria-label="Сквозное прослушивание">
+        <div id="cont-dot"></div>
+        ⟫
+      </button>
+      <button class="ctrl-btn icon-only" id="next-topic-btn" aria-label="Следующая тема">⟩</button>
+    </div>
+  </footer>
+</div>
+
+<!-- MENU OVERLAY -->
+<div id="menu-overlay" role="dialog" aria-modal="true" aria-label="Список тем">
+  <div id="menu-backdrop"></div>
+  <nav id="menu-panel">
+    <div id="menu-header">
+      <h2>Темы</h2>
+      <button id="menu-close" aria-label="Закрыть меню">✕</button>
+    </div>
+    <div id="menu-list"></div>
+  </nav>
+</div>
+
+<!-- TOAST -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- HIDDEN AUDIO -->
+<audio id="audio-el" preload="none"></audio>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+const state = {
+  topics: [],
+  topicIdx: 0,
+  cardIdx: 0,
+  audioPlaying: false,
+  continuousMode: false,
+  imgCache: new Map(),
+  thumbCache: new Map(),
+  audioLoaded: false,
+};
+
+// ── REFS ───────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const cardImg     = $('card-img');
+const audioEl     = $('audio-el');
+const stageVideo  = $('stage-video');
+const videoOverlay= $('video-overlay');
+const topicTitle  = $('topic-title');
+const cardCounter = $('card-counter');
+const audioRow    = $('audio-row');
+const thumbStrip  = $('thumb-strip');
+const progressEl  = $('progress');
+const timeCur     = $('time-cur');
+const timeTot     = $('time-tot');
+const playBtn     = $('play-btn');
+const pauseBtn    = $('pause-btn');
+const stopBtn     = $('stop-btn');
+const videoBtn    = $('video-btn');
+const contBtn     = $('cont-listen-btn');
+const menuOverlay = $('menu-overlay');
+const menuList    = $('menu-list');
+const toastEl     = $('toast');
+const prevCardBtn = $('prev-card-btn');
+const nextCardBtn = $('next-card-btn');
+const prevTopicBtn= $('prev-topic-btn');
+const nextTopicBtn= $('next-topic-btn');
+
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function fmtTime(s) {
+  s = Math.floor(s || 0);
+  const m = Math.floor(s / 60);
+  return `${m}:${String(s % 60).padStart(2,'0')}`;
+}
+
+function parseTS(str) {
+  if (!str) return null;
+  const p = str.split(':').map(Number);
+  return p.length === 2 ? p[0]*60 + p[1] : null;
+}
+
+function showToast(msg, dur = 1800) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toastEl.classList.remove('show'), dur);
+}
+
+// ── IMAGE LOADING ──────────────────────────────────────────────────────────
+function loadImg(src) {
+  if (state.imgCache.has(src)) return Promise.resolve(state.imgCache.get(src));
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = img.onerror = () => { state.imgCache.set(src, img.src); res(img.src); };
+    img.src = src;
+  });
+}
+
+function preloadNearby() {
+  const t = state.topics[state.topicIdx];
+  if (!t) return;
+  const toLoad = [];
+  t.cards.forEach((c, i) => {
+    if (Math.abs(i - state.cardIdx) <= 1) toLoad.push(c.image);
+  });
+  const next = state.topics[state.topicIdx + 1];
+  if (next && next.cards[0]) toLoad.push(next.cards[0].image);
+  toLoad.forEach(src => { if (!state.imgCache.has(src)) loadImg(src); });
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+async function renderCard(animate = true) {
+  const t = state.topics[state.topicIdx];
+  if (!t) return;
+  const c = t.cards[state.cardIdx];
+  if (!c) return;
+
+  if (animate) {
+    cardImg.classList.add('loading');
+  }
+
+  const src = await loadImg(c.image);
+  cardImg.src = src;
+  cardImg.alt = c.title || t.name;
+  cardImg.classList.remove('loading');
+
+  topicTitle.textContent = t.name;
+  cardCounter.textContent = `${state.cardIdx + 1} / ${t.cards.length}`;
+
+  // thumbs
+  renderThumbs(t);
+
+  // nav arrows
+  prevCardBtn.disabled = state.cardIdx === 0 && !state.audioPlaying;
+  nextCardBtn.disabled = state.cardIdx === t.cards.length - 1 && !state.audioPlaying;
+
+  // video button (only first card)
+  if (state.cardIdx === 0 && t.video) {
+    videoBtn.style.display = 'flex';
+  } else {
+    videoBtn.style.display = 'none';
+  }
+
+  // audio
+  renderAudio(t);
+
+  // topic nav
+  prevTopicBtn.disabled = state.topicIdx === 0;
+  nextTopicBtn.disabled = state.topicIdx === state.topics.length - 1;
+
+  preloadNearby();
+}
+
+function renderThumbs(t) {
+  thumbStrip.innerHTML = '';
+  t.cards.forEach((c, i) => {
+    if (state.thumbCache.has(c.image)) {
+      const img = document.createElement('img');
+      img.className = 'thumb' + (i === state.cardIdx ? ' active' : '');
+      img.src = state.thumbCache.get(c.image);
+      img.alt = '';
+      img.loading = 'lazy';
+      img.onclick = () => goCard(i);
+      thumbStrip.appendChild(img);
+    } else {
+      const div = document.createElement('div');
+      div.className = 'thumb placeholder' + (i === state.cardIdx ? ' active' : '');
+      div.textContent = '🖼';
+      div.onclick = () => goCard(i);
+      thumbStrip.appendChild(div);
+      // lazy load thumb
+      const img2 = new Image();
+      img2.onload = () => {
+        state.thumbCache.set(c.image, img2.src);
+        renderThumbs(t);
+      };
+      img2.src = c.image;
+    }
+  });
+  // scroll active thumb into view
+  const active = thumbStrip.querySelector('.thumb.active');
+  if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+function renderAudio(t) {
+  if (t.audio) {
+    audioRow.classList.remove('hidden');
+    // load audio lazily only when topic changes
+    if (audioEl.dataset.topic !== String(state.topicIdx)) {
+      audioEl.src = t.audio;
+      audioEl.load();
+      audioEl.dataset.topic = state.topicIdx;
+      state.audioLoaded = false;
+    }
+  } else {
+    audioRow.classList.add('hidden');
+    if (!state.continuousMode) stopAudio(false);
+  }
+}
+
+// ── AUDIO ──────────────────────────────────────────────────────────────────
+function playAudio() {
+  const t = state.topics[state.topicIdx];
+  if (!t || !t.audio) return;
+  if (audioEl.dataset.topic !== String(state.topicIdx)) {
+    audioEl.src = t.audio;
+    audioEl.load();
+    audioEl.dataset.topic = state.topicIdx;
+  }
+  audioEl.play().then(() => {
+    state.audioPlaying = true;
+    playBtn.classList.add('active');
+    pauseBtn.classList.remove('active');
+  }).catch(e => console.warn(e));
+}
+
+function pauseAudio() {
+  audioEl.pause();
+  state.audioPlaying = false;
+  playBtn.classList.remove('active');
+  pauseBtn.classList.add('active');
+}
+
+function stopAudio(resetPos = true) {
+  audioEl.pause();
+  if (resetPos) audioEl.currentTime = 0;
+  state.audioPlaying = false;
+  playBtn.classList.remove('active');
+  pauseBtn.classList.remove('active');
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+function goCard(idx) {
+  const t = state.topics[state.topicIdx];
+  if (!t) return;
+  idx = Math.max(0, Math.min(t.cards.length - 1, idx));
+  if (idx === state.cardIdx) return;
+
+  // if audio playing, seek to card timestamp
+  if (state.audioPlaying && t.cards[idx] && t.cards[idx].time) {
+    const ts = parseTS(t.cards[idx].time);
+    if (ts !== null) audioEl.currentTime = ts;
+  } else if (!state.audioPlaying) {
+    state.cardIdx = idx;
+    renderCard();
+  } else {
+    // audio is playing but card has no timestamp — just switch visually
+    state.cardIdx = idx;
+    renderCard();
+  }
+}
+
+function goTopic(idx, play = false) {
+  if (idx < 0 || idx >= state.topics.length) return;
+  stopAudio(true);
+  state.topicIdx = idx;
+  state.cardIdx = 0;
+  renderCard();
+  if (play && state.continuousMode) {
+    const t = state.topics[idx];
+    if (t.audio) setTimeout(playAudio, 200);
+    else {
+      // no audio — advance after a short delay
+      if (idx + 1 < state.topics.length) {
+        setTimeout(() => goTopic(idx + 1, true), 2000);
+      } else {
+        state.continuousMode = false;
+        contBtn.classList.remove('active');
+        showToast('Прослушивание завершено');
+      }
+    }
+  }
+  buildMenu(); // update active item
+}
+
+// ── AUDIO TIMEUPDATE ───────────────────────────────────────────────────────
+audioEl.addEventListener('timeupdate', () => {
+  const t = state.topics[state.topicIdx];
+  if (!t) return;
+  const cur = audioEl.currentTime;
+
+  // update progress bar
+  if (audioEl.duration) {
+    progressEl.value = (cur / audioEl.duration) * 100;
+    timeCur.textContent = fmtTime(cur);
+    timeTot.textContent = fmtTime(audioEl.duration);
+  }
+
+  // auto card switch by timestamp
+  if (state.audioPlaying) {
+    let target = 0;
+    t.cards.forEach((c, i) => {
+      const ts = parseTS(c.time);
+      if (ts !== null && cur >= ts) target = i;
+    });
+    if (target !== state.cardIdx) {
+      state.cardIdx = target;
+      renderCard(false);
+    }
+  }
+});
+
+audioEl.addEventListener('ended', () => {
+  state.audioPlaying = false;
+  playBtn.classList.remove('active');
+  pauseBtn.classList.remove('active');
+  if (state.continuousMode) {
+    const nextIdx = state.topicIdx + 1;
+    if (nextIdx < state.topics.length) {
+      goTopic(nextIdx, true);
+    } else {
+      state.continuousMode = false;
+      contBtn.classList.remove('active');
+      showToast('Сквозное прослушивание завершено');
+    }
+  }
+});
+
+audioEl.addEventListener('loadedmetadata', () => {
+  timeTot.textContent = fmtTime(audioEl.duration);
+});
+
+// ── PROGRESS BAR SEEK ─────────────────────────────────────────────────────
+progressEl.addEventListener('input', () => {
+  if (audioEl.duration) {
+    audioEl.currentTime = (progressEl.value / 100) * audioEl.duration;
+  }
+});
+
+// ── BUTTON EVENTS ─────────────────────────────────────────────────────────
+playBtn.onclick  = playAudio;
+pauseBtn.onclick = pauseAudio;
+stopBtn.onclick  = () => stopAudio(true);
+
+prevCardBtn.onclick = () => {
+  if (state.cardIdx > 0) goCard(state.cardIdx - 1);
+  else if (state.topicIdx > 0) goTopic(state.topicIdx - 1);
+};
+nextCardBtn.onclick = () => {
+  const t = state.topics[state.topicIdx];
+  if (t && state.cardIdx < t.cards.length - 1) goCard(state.cardIdx + 1);
+  else if (state.topicIdx < state.topics.length - 1) goTopic(state.topicIdx + 1);
+};
+
+prevTopicBtn.onclick = () => goTopic(state.topicIdx - 1);
+nextTopicBtn.onclick = () => goTopic(state.topicIdx + 1);
+
+contBtn.onclick = () => {
+  state.continuousMode = !state.continuousMode;
+  contBtn.classList.toggle('active', state.continuousMode);
+  if (state.continuousMode) {
+    showToast('Сквозное прослушивание включено');
+    const t = state.topics[state.topicIdx];
+    if (t && t.audio && !state.audioPlaying) playAudio();
+  } else {
+    showToast('Сквозное прослушивание выключено');
+  }
+};
+
+// video
+videoBtn.onclick = () => {
+  const t = state.topics[state.topicIdx];
+  if (!t || !t.video) return;
+  stageVideo.src = t.video;
+  stageVideo.load();
+  videoOverlay.classList.add('active');
+  stageVideo.play().catch(e => console.warn(e));
+};
+
+$('video-close').onclick = () => {
+  stageVideo.pause();
+  stageVideo.src = '';
+  videoOverlay.classList.remove('active');
+};
+
+stageVideo.addEventListener('ended', () => {
+  stageVideo.pause();
+  stageVideo.src = '';
+  videoOverlay.classList.remove('active');
+});
+
+// ── MENU ──────────────────────────────────────────────────────────────────
+function buildMenu() {
+  menuList.innerHTML = '';
+  state.topics.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = 'menu-item' + (i === state.topicIdx ? ' active' : '');
+    item.onclick = () => { goTopic(i); closeMenu(); };
+
+    const firstImg = t.cards[0]?.image;
+    const thumb = document.createElement(firstImg ? 'img' : 'div');
+    thumb.className = 'menu-thumb';
+    if (firstImg) { thumb.src = firstImg; thumb.loading = 'lazy'; thumb.alt = ''; }
+
+    const info = document.createElement('div');
+    info.className = 'menu-info';
+    const name = document.createElement('div');
+    name.className = 'menu-name';
+    name.textContent = t.name;
+    const meta = document.createElement('div');
+    meta.className = 'menu-meta';
+    const parts = [];
+    if (t.cards.length) parts.push(`${t.cards.length} карт.`);
+    if (t.audio) parts.push('🔊');
+    if (t.video) parts.push('🎬');
+    meta.textContent = parts.join('  ');
+
+    info.appendChild(name);
+    info.appendChild(meta);
+    item.appendChild(thumb);
+    item.appendChild(info);
+    menuList.appendChild(item);
+  });
+}
+
+$('menu-btn').onclick = openMenu;
+$('menu-close').onclick = closeMenu;
+$('menu-backdrop').onclick = closeMenu;
+
+function openMenu() {
+  menuOverlay.classList.add('open');
+  buildMenu();
+}
+function closeMenu() { menuOverlay.classList.remove('open'); }
+
+// ── SWIPE ─────────────────────────────────────────────────────────────────
+let touchX = null, touchY = null;
+document.addEventListener('touchstart', e => {
+  touchX = e.touches[0].clientX;
+  touchY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    if (dx < 0) nextCardBtn.onclick();
+    else prevCardBtn.onclick();
+  }
+  touchX = touchY = null;
+}, { passive: true });
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (menuOverlay.classList.contains('open')) { if (e.key === 'Escape') closeMenu(); return; }
+  if (videoOverlay.classList.contains('active')) { if (e.key === 'Escape') $('video-close').click(); return; }
+  switch(e.key) {
+    case 'ArrowLeft':  prevCardBtn.onclick(); break;
+    case 'ArrowRight': nextCardBtn.onclick(); break;
+    case 'ArrowUp':    goTopic(state.topicIdx - 1); break;
+    case 'ArrowDown':  goTopic(state.topicIdx + 1); break;
+    case ' ':
+      e.preventDefault();
+      if (state.audioPlaying) pauseAudio(); else playAudio();
+      break;
+    case 'Escape': stopAudio(); break;
+    case 'm': case 'M': openMenu(); break;
+  }
+});
+
+// ── LOAD DATA ─────────────────────────────────────────────────────────────
+async function init() {
+  let data;
+  try {
+    const r = await fetch('cards.json');
+    data = await r.json();
+  } catch(e) {
+    topicTitle.textContent = 'Ошибка загрузки cards.json';
+    console.error(e);
+    return;
+  }
+
+  // normalize: topics array
+  const topics = Array.isArray(data) ? data : (data.topics || []);
+  state.topics = topics.map(t => ({
+    name: t.name || 'Без названия',
+    audio: t.audio || null,
+    video: t.video || null,
+    cards: (t.cards || []).map(c => ({
+      image: c.image,
+      title: c.title || '',
+      time: c.time || null,
+    })),
+  }));
+
+  if (!state.topics.length) {
+    topicTitle.textContent = 'Нет тем в cards.json';
+    return;
+  }
+
+  buildMenu();
+  renderCard();
+}
+
+init();
+</script>
+</body>
+</html>
