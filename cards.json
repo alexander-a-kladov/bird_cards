@@ -34,5 +34,77 @@
       { "image": "images/birds07_ru.jpg", "title": "видео",   "time": "0:00" },
       { "image": "images/birds08_ru.jpg", "title": "описание",     "time": "0:10" }
     ]
+  },
+  {
+    "name": "Кольчатая горлица",
+    "audio": "audio/birds09_ru.mp3",
+    "video": "videos/birds09_ru.mp4",
+    "cards": [
+      { "image": "images/birds09_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds10_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Черная ворона",
+    "audio": "audio/birds11_ru.mp3",
+    "video": "videos/birds11_ru.mp4",
+    "cards": [
+      { "image": "images/birds11_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds12_ru.jpg", "title": "описание",     "time": "0:11" }
+    ]
+  },
+  {
+    "name": "Лысуха",
+    "audio": "audio/birds13_ru.mp3",
+    "video": "videos/birds13_ru.mp4",
+    "cards": [
+      { "image": "images/birds13_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds14_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Кукушка",
+    "audio": "audio/birds15_ru.mp3",
+    "video": "videos/birds15_ru.mp4",
+    "cards": [
+      { "image": "images/birds15_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds16_ru.jpg", "title": "описание",     "time": "0:08" }
+    ]
+  },
+  {
+    "name": "Щегол",
+    "audio": "audio/birds17_ru.mp3",
+    "video": "videos/birds17_ru.mp4",
+    "cards": [
+      { "image": "images/birds17_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds18_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Большая синица",
+    "audio": "audio/birds19_ru.mp3",
+    "video": "videos/birds19_ru.mp4",
+    "cards": [
+      { "image": "images/birds19_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds20_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Большой пестрый дятел",
+    "audio": "audio/birds21_ru.mp3",
+    "video": "videos/birds21_ru.mp4",
+    "cards": [
+      { "image": "images/birds21_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds22_ru.jpg", "title": "описание",     "time": "0:13" }
+    ]
+  },
+  {
+    "name": "Серая цапля",
+    "audio": "audio/birds23_ru.mp3",
+    "video": "videos/birds23_ru.mp4",
+    "cards": [
+      { "image": "images/birds23_ru.jpg", "title": "видео",   "time": "0:00" },
+      { "image": "images/birds24_ru.jpg", "title": "описание",     "time": "0:16" }
+    ]
   }
 ]
