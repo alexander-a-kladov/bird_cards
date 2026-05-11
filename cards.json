@@ -1,3 +1,12 @@
+{
+  "title": "Птицы",
+  "menuTitle": "Темы",
+  "infoScreenTitle": "Информация",
+  "info": [
+    "images/info_01.jpg",
+    "images/info_02.jpg"
+  ],
+  "topics": 
 [
   {
     "name": "Лазоревка",
@@ -270,3 +279,4 @@
     ]
   }
 ]
+}
